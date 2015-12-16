@@ -1,0 +1,39 @@
+    {% load rest_framework %}
+
+    <html>
+    <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+
+    <nav class="navbar navbar-default">
+    {% for cat in category %}
+        <div style="display:inline-block;" class="dropdown">
+            <button id="dLabel" type="button" data-toggle="dropdown">
+                    {{ cat.name }}
+                <span class="caret"></span>
+            </button>
+                    {% if subcategory %}
+                        <ul class="dropdown-menu" aria-labelledby="dLabel">
+                        {% for subcat in subcategory %}
+                              {% if subcat.parent.id == cat.id %}
+                            <li><a href="/category/{{subcat.id}}/">{{subcat.name}}</a></li>
+                               {% endif %}
+                        {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p>No polls are available.</p>
+                    {% endif %}
+        </div>
+        {% endfor %}
+    </nav>
+
+    </body>
+
+    </html>

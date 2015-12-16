@@ -1,0 +1,68 @@
+    {% load rest_framework %}
+
+    <html>
+    <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </head>
+
+    <body>
+
+    <div>
+        {% if items %}
+        <ul>
+            {% for item in items %}
+            <li><a href="/items/{{item.id}}/">{{item.name}}</a>
+                <span></span>
+                <button id="{{item.id}}" onclick="addItem({{item}})">Add to Cart</button></li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+
+    </div>
+
+    <div style="float:right;"> Items in the cart : <span id="itemAdded"> 0 </span></div><br>
+    <button style="float:right;" onclick="showItems()">Checkout</button>
+
+
+    <script>
+
+         var addedItems = [];
+         var obj = { };
+        function addItem(item) {
+         obj[item.name] = (obj[item.name] || 0) + 1;
+           addedItems.push(item.name);
+           document.getElementById("itemAdded").innerHTML = addedItems.length;
+        }
+
+        function showItems(){
+           if (addedItems == 0)
+                alert("Your cart is empty");
+           else
+           {
+                var data = " "
+                addedItems.sort();
+                prev = addedItems[0]
+                data = data + addedItems[0] + "  Quantity - " + obj[addedItems[0]] + "\n";
+                for (i=1; i < addedItems.length ; i++)
+                {
+                    if(prev != addedItems[i])
+                    {data = data + addedItems[i] + "  Quantity - " + obj[addedItems[i]] + "\n";
+                       prev = addedItems[i];}
+
+                }
+                alert("Your cart contains: " + "\n" + data);
+           }
+
+        }
+
+
+    </script>
+
+    </body>
+
+    </html>
