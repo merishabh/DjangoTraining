@@ -1,24 +1,32 @@
 from django.shortcuts import render
 from django.http import Http404
+from django.http import JsonResponse
 
 from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.renderers import JSONRenderer
+from rest_framework.parsers import JSONParser
 from rest_framework.renderers import TemplateHTMLRenderer
 from rest_framework import generics
+from rest_framework import status
+import json
 
 from ecom_module.models import Category, Item, Cart
 from ecom_module.serializers import CategorySerializers, ItemSerializers, CartSerializers
 
 
-class AddCategory(APIView):
+class AddItem(APIView):
     """
-    Allows the user to add category and subcategory.
+    Allows the user to add items under given subcategory or category.
     """
     renderer_classes = [TemplateHTMLRenderer]
-    template_name = 'ecom_module/addCategory.html'
+    template_name = 'ecom_module/addItem.html'
 
     def get(self, request):
+        """
+        gets the added items.
+        """
         category = Category.objects.all()
         category_list = []
         subcategory_list = []
@@ -37,22 +45,54 @@ class AddCategory(APIView):
                 data['parent'] = categ.parent.id
                 subcategory_list.append(data)
                 data = {}
-        print(category_list)
-        return Response({'category': category_list, 'subcategory': subcategory_list})
+        return render(request,'ecom_module/addItem.html',
+                      {'category': category_list, 'subcategory': subcategory_list})
 
     def post(self, request):
-        print(request.POST)
-        return Response("Success")
+        """
+        post the item added by the user to the model.
+        """
+        serializer = ItemSerializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            print(Item.objects.all())
+            return JsonResponse({'success': 'You have successfully saved item'})
+        return JsonResponse({'failure': 'Unsuccessful in adding item'})
 
 
-
-
-class AddItem(generics.ListCreateAPIView):
+class AddCategory(APIView):
     """
-    Allows the user to add items under given subcategory or category.
+    Allows the user to add category and subcategory.
     """
-    queryset = Item.objects.all()
-    serializer_class = ItemSerializers
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'ecom_module/addCategory.html'
+
+    def get(self, request):
+        """
+        renders the addCategory html file
+        """
+        category = Category.objects.all()
+        category_list = []
+        data = {}
+        for categ in category:
+            if categ.parent is None:
+                data['id'] = categ.id
+                data['name'] = str(categ.name)
+                category_list.append(data)
+                data = {}
+        return render(request,'ecom_module/addCategory.html',
+                      {'category': category_list})
+
+    def post(self, request):
+        """
+        post added data to server.
+        """
+        serializer = CategorySerializers(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            print(Category.objects.all())
+            return JsonResponse({'success': 'You have successfully saved item'})
+        return JsonResponse({'failure': 'Unsuccessful in adding item'})
 
 
 class CategoryList(APIView):
@@ -63,6 +103,9 @@ class CategoryList(APIView):
     template_name = 'ecom_module/index.html'
 
     def get(self, request):
+        """
+        renders the ecom_module html file.
+        """
         category = Category.objects.all()
         subcategory_list = []
         category_list = []
@@ -82,12 +125,18 @@ class CategoryDetail(APIView):
     template_name = 'ecom_module/categoryDetail.html'
 
     def get_object(self, pk):
+        """
+        get the category object of the given pk.
+        """
         try:
             return Category.objects.get(pk=pk)
         except Category.DoesNotExist:
             raise Http404
 
     def get(self, request, pk, format=None):
+        """
+        renders the categoryDetail html file.
+        """
         category = self.get_object(pk)
         serializer = CategorySerializers(category)
         return Response({'serializer': serializer, 'category': category})
@@ -150,7 +199,6 @@ class CartList(APIView):
     template_name = 'ecom_module/cartDetail.html'
 
     def post(self, request, format=None):
-        print(request.body)
         serializer = CartSerializers(request)
         return Response({'serializer': serializer, 'cart': request.body})
 

@@ -1,0 +1,64 @@
+    {% load rest_framework %}
+
+    <html>
+    <head>
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+      <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+    </head>
+
+
+    <body>
+
+    <div>Name: <input id = "name" type="text"></div>
+    <div>Brand: <input id = "brand" type="text"></div>
+    <div>Category: <select id="category">
+        {% for cate in category %}
+           <option value="{{cate.id}}">{{cate.name}}</option>
+        {% endfor %}
+    </select></div>
+    <div>SubCategory: <select id="subcategory">
+        {% for sub_cate in subcategory %}
+           <option value="{{sub_cate.id}}">{{sub_cate.name}}</option>
+        {% endfor %}
+    </select></div>
+    <div>Specification: <input id = "specification" type="text"></div>
+    <div>Price: <input id ="price" type="number"></div>
+    <button onclick="addValues()"> Add Item</button>
+
+    <script>
+
+        var data = {};
+
+    function addValues() {
+        data['name'] = document.getElementById("name").value;
+        data['brand'] = document.getElementById("brand").value;
+        var e = document.getElementById("category");
+        data['category'] = e.options[e.selectedIndex].value;
+        e = document.getElementById("subcategory");
+        data['subcategory'] = e.options[e.selectedIndex].value;
+        data['specification'] = document.getElementById("specification").value;
+        data['price'] = document.getElementById("price").value;
+
+        $.ajax({
+    url: 'http://127.0.0.1:8000/additems/',
+    type: 'post',
+    data : data,
+    success: function(da) {
+        alert(da.success);
+    },
+    failure: function(data) {
+        alert('Got an error dude');
+    }
+});
+
+        }
+
+    </script>
+
+    </body>
+
+    </html>
