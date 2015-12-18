@@ -1,3 +1,5 @@
+{% load rest_framework %}
+
     {% load rest_framework %}
 
     <html>
@@ -5,6 +7,10 @@
     <!-- Latest compiled and minified CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+      <link rel="stylesheet"
+      href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+<link rel="stylesheet"
+     href="http://netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap-theme.min.css">
 
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
       <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
@@ -12,7 +18,13 @@
 
 
     <body>
-
+    <h1>Categories</h1>
+    <div class="list-group">
+         {% for cate in category %}
+        <li class = "list-group-item" id="{{cate.id}}">{{cate.name}} <a id="menu-toggle" href="#" class="btn btn-default" onclick="valueglyph({{cate.id}})">
+            <i class="glyphicon glyphicon-remove"></i></a></li>
+          {% endfor %}
+    </div>
     <div>Category Name: <input id = "name" type="text"></div>
     <div>Description: <input id = "description" type="text"></div>
     <div id="radioDiv">
@@ -26,55 +38,18 @@
     </select></div>
     <button onclick="addValues()"> Add Category</button>
 
-    <style>
-
-        body {
-               background-color: #d0e4fe;
-             }
-
-
-
-    </style>
     <script>
 
         var data = {};
 
-        function showParent()
-        {
-        var selectedVal = "";
-        var selected = $("#radioDiv input[type='radio']:checked");
-        if (selected.length > 0) {
-        selectedVal = selected.val();
-        }
-           if(selectedVal == "category")
-              {
-                 $("#parentdiv").hide();
-              }
-           else if(selectedVal == "subcategory")
-              {
-                 $("#parentdiv").show();
-              }
-        }
-
-    function addValues() {
-        data['name'] = document.getElementById("name").value;
-        data['description'] = document.getElementById("description").value;
-        var selected = $("#radioDiv input[type='radio']:checked");
-        if (selected.length > 0) {
-        selectedVal = selected.val();
-        }
-           if(selectedVal == "category")
-              {
-                  data['parent'] = ''
-              }
-           else
-              {
-                 var e = document.getElementById("parent");
-                 data['parent'] = e.options[e.selectedIndex].value;
-              }
+          function valueglyph(value)
+          {
+             data['id'] = value
+              alert(value);
+          }
 
         $.ajax({
-    url: '/addcategory/',
+    url: '/deletecategory/',
     type: 'post',
     data : data,
     success: function(data) {
@@ -84,8 +59,6 @@
         alert(data.failure);
     }
 });
-
-        }
 
     </script>
 

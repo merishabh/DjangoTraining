@@ -57,7 +57,7 @@ class AddItem(APIView):
             serializer.save()
             print(Item.objects.all())
             return JsonResponse({'success': 'You have successfully saved item'})
-        return JsonResponse({'failure': 'Unsuccessful in adding item'})
+        return JsonResponse({'failure': 'Unsuccessful in saving item'})
 
 
 class AddCategory(APIView):
@@ -90,9 +90,41 @@ class AddCategory(APIView):
         serializer = CategorySerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            print(Category.objects.all())
             return JsonResponse({'success': 'You have successfully saved item'})
-        return JsonResponse({'failure': 'Unsuccessful in adding item'})
+        return JsonResponse({'failure': 'Unsuccessful in saving item'})
+
+
+class DeleteCategory(APIView):
+    """
+
+    """
+    renderer_classes = [TemplateHTMLRenderer]
+    template_name = 'ecom_module/deleteCategory.html'
+
+    def get(self, request):
+        """
+        renders the deleteCategory html file
+        """
+        category = Category.objects.all()
+        category_list = []
+        data = {}
+        for categ in category:
+            if categ.parent is None:
+                data['id'] = categ.id
+                data['name'] = str(categ.name)
+                category_list.append(data)
+                data = {}
+        return render(request,'ecom_module/deleteCategory.html',
+                      {'category': category_list})
+
+    def post(self, request):
+        """
+        post added data to server.
+        """
+        print(request.body)
+
+        return JsonResponse({'failure': 'Unsuccessful in saving item'})
+
 
 
 class CategoryList(APIView):

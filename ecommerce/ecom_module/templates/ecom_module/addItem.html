@@ -44,7 +44,7 @@
         data['price'] = document.getElementById("price").value;
 
         $.ajax({
-    url: 'http://127.0.0.1:8000/additems/',
+    url: '/additems/',
     type: 'post',
     data : data,
     success: function(da) {
