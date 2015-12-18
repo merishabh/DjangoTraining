@@ -90,8 +90,8 @@ class AddCategory(APIView):
         serializer = CategorySerializers(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            return JsonResponse({'success': 'You have successfully saved item'})
-        return JsonResponse({'failure': 'Unsuccessful in saving item'})
+            return JsonResponse({'success': 'You have successfully added the category'})
+        return JsonResponse({'failure': 'Unsuccessful in adding category'})
 
 
 class DeleteCategory(APIView):
@@ -121,9 +121,10 @@ class DeleteCategory(APIView):
         """
         post added data to server.
         """
-        print(request.body)
+        serializer = Category.objects.get(pk=request.POST['id'])
+        serializer.delete()
+        return JsonResponse({'success': 'You have successfully deleted item', 'failure': 'Unsuccessful in deleting item'})
 
-        return JsonResponse({'failure': 'Unsuccessful in saving item'})
 
 
 

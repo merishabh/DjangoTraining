@@ -21,22 +21,10 @@
     <h1>Categories</h1>
     <div class="list-group">
          {% for cate in category %}
-        <li class = "list-group-item" id="{{cate.id}}">{{cate.name}} <a id="menu-toggle" href="#" class="btn btn-default" onclick="valueglyph({{cate.id}})">
+        <li class = "list-group-item" id="{{cate.id}}">{{cate.name}} <a id="menu-toggle" class="btn btn-default" onclick="valueglyph({{cate.id}})">
             <i class="glyphicon glyphicon-remove"></i></a></li>
           {% endfor %}
     </div>
-    <div>Category Name: <input id = "name" type="text"></div>
-    <div>Description: <input id = "description" type="text"></div>
-    <div id="radioDiv">
-    <input type="radio" name="findCategory" value="category" onclick="showParent()">Category<br>
-    <input type="radio" name="findCategory" value="subcategory" onclick="showParent()">SubCategory
-    </div>
-        <div id="parentdiv">Parent: <select id="parent">
-        {% for cate in category %}
-           <option value="{{cate.id}}">{{cate.name}}</option>
-        {% endfor %}
-    </select></div>
-    <button onclick="addValues()"> Add Category</button>
 
     <script>
 
@@ -45,20 +33,20 @@
           function valueglyph(value)
           {
              data['id'] = value
-              alert(value);
-          }
 
         $.ajax({
-    url: '/deletecategory/',
+    url: 'http://127.0.0.1:8000/category/delete/',
     type: 'post',
     data : data,
     success: function(data) {
         alert(data.success);
+        location.reload();
     },
     failure: function(data) {
         alert(data.failure);
     }
 });
+}
 
     </script>
 
